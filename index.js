@@ -25,8 +25,15 @@ async function run() {
       const cursor = moviesCollection.find(query)
       const movies = await cursor.toArray(cursor);
       res.send(movies);
-
     } )
+
+    app.get('/movies/:id', async (req,res)=>{
+      const id = req.params.id;
+      const query ={_id: new ObjectId(id)};
+      const movie = await moviesCollection.findOne(query);
+      res.send(movie);
+    } )
+
   } finally {
     // await client.close();
   }
