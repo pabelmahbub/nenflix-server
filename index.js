@@ -1,36 +1,44 @@
-const express = require('express')
-const cors = require('cors')
-require('dotenv').config()
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const { MongoClient,ObjectId } = require('mongodb');
 
-const app = express()
-const port = process.env.PORT || 5000
-
+require('dotenv').config();
+const port = process.env.PORT || 8000
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.s8p6jkq.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+console.log('database is connected');
 
-console.log(process.env.DB_USER,process.env.DB_PASSWORD);
+async function run() {
+  try {
+    const database = client.db("nenflix-server");
+    const moviesCollection = database.collection("allMovies");
+    
+    app.get('/movies', async (req,res)=>{
+      const query ={}
+      const cursor = moviesCollection.find(query)
+      const movies = await cursor.toArray(cursor);
+      res.send(movies);
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ngyafc8.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-
-
+    } )
+  } finally {
+    // await client.close();
+  }
+}
+run().catch(console.dir);
 
 
 
 app.get('/', (req, res) => {
-  res.send('nenflix is running')
+  res.send('Hello World!')
 })
 
 app.listen(port, () => {
-  console.log(`Nenflix is running app listening on port ${port}`)
+  console.log("Example app listening on port 5000")
 })
