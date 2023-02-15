@@ -47,7 +47,7 @@ async function run() {
       res.send(cursor);
     })
 
-    app.delete('/manageMovie/:id',async(req,res)=>{
+    app.delete('/manageMovies/:id', async(req,res)=>{
       const id = req.params.id;
       const query = {_id:ObjectId(id)};
       const result = await moviesCollection.deleteOne(query);
