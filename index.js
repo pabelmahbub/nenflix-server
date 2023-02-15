@@ -32,8 +32,23 @@ async function run() {
       const query ={_id: new ObjectId(id)};
       const movie = await moviesCollection.findOne(query);
       res.send(movie);
-    } )
+    })
 
+    app.post('/addMovie', async(req,res)=>{
+      const post = req.body;
+      console.log('post a movie');
+      const cursor = await moviesCollection.insertOne(post);
+      res.send(cursor);
+    })
+
+    app.delete('/manageMovie/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id:ObjectId(id)};
+      const result = await moviesCollection.deleteOne(query);
+      res.json(result);
+    })
+
+    
   } finally {
     // await client.close();
   }
