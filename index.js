@@ -47,13 +47,20 @@ async function run() {
       res.send(cursor);
     })
 
-    app.delete('/manageMovies/:id', async(req,res)=>{
+    app.delete('/managemovie/:id', async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await moviesCollection.deleteOne(query);
       res.json(result);
     })
 
+    app.get('/serviceCount', async(req,res)=>{
+     // const query = {};
+     // const cursor = productCollection.find(query);
+     // const count = await cursor.count(cursor);
+     const count = await moviesCollection.estimatedDocumentCount();
+     res.send({count});
+   })
     
   } finally {
     // await client.close();
